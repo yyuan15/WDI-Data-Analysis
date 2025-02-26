@@ -1,0 +1,287 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: \"QTM350 Assignment 5\"\n",
+        "author: \"Bernice Yuan\"\n",
+        "date: \"2025-02-26\"\n",
+        "format:\n",
+        "  html:\n",
+        "    code-fold: true\n",
+        "  pdf: \n",
+        "    code-overflow: wrap\n",
+        "    code-width: 80\n",
+        "jupyter: python3\n",
+        "execute: \n",
+        "  echo: false\n",
+        "bibliography: references.bib\n",
+        "---"
+      ],
+      "id": "e8f858f3"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import pandas as pd\n",
+        "import matplotlib.pyplot as plt\n",
+        "import seaborn as sns\n",
+        "import numpy as np\n",
+        "from IPython.display import display\n",
+        "\n",
+        "wdi = pd.read_csv('/Users/apple/Documents/QTM 350/BY_QTM350_Assignment5_slides_files/wdi.csv')"
+      ],
+      "id": "bb2073cb",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Data Analysis\n",
+        "\n",
+        "I conducted simple data analysis on the four selected indicators: `GDP per Capita`,` Life Expectancy`, `Unemployment Rate`, and `GDP Growth Rate`. Below is a table that includes descriptive statistics (mean, median, standard deviation, min, max). The distributions of these four indicators are also included. See @fig-plot, @fig-plot-2,@fig-plot-3, @fig-plot-4."
+      ],
+      "id": "0b5cdabf"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| echo: true\n",
+        "#| eval: true\n",
+        "#| code-overflow: wrap\n",
+        "\n",
+        "df = wdi[['gdp_per_capita', 'life_expectancy', 'unemployment_rate', 'gdp_growth_rate']].dropna()\n",
+        "\n",
+        "descriptive_stats = df.describe().transpose()\n",
+        "descriptive_stats = descriptive_stats[['count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max']]\n",
+        "descriptive_stats.columns = ['Count', 'Mean', 'Std Dev', 'Min', '25th Percentile', 'Median', '75th Percentile', 'Max']\n",
+        "\n",
+        "display(descriptive_stats) "
+      ],
+      "id": "2206350c",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| label: fig-plot\n",
+        "#| fig-cap: Unemplotment Plot\n",
+        "#| echo: true\n",
+        "\n",
+        "plt.figure(figsize=(8,6))\n",
+        "sns.histplot(df['unemployment_rate'], bins=20, kde=True, color='red')\n",
+        "plt.xlabel(\"Unemployment Rate (%)\")\n",
+        "plt.ylabel(\"Frequency\")\n",
+        "plt.title(\"Distribution of Unemployment Rate\")\n",
+        "plt.grid(True)\n",
+        "plt.show()\n"
+      ],
+      "id": "fig-plot",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| label: fig-plot-2\n",
+        "#| echo: true\n",
+        "#| fig-cap: GDP Growth Rate Plot\n",
+        "plt.figure(figsize=(8,6))\n",
+        "sns.histplot(df['gdp_growth_rate'], bins=20, kde=True, color='purple')\n",
+        "plt.xlabel(\"GDP Growth Rate (%)\")\n",
+        "plt.ylabel(\"Frequency\")\n",
+        "plt.title(\"Distribution of GDP Growth Rate\")\n",
+        "plt.grid(True)\n",
+        "plt.show()"
+      ],
+      "id": "fig-plot-2",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| label: fig-plot-3\n",
+        "#| echo: true\n",
+        "#| fig-cap: GDP per Capita Plot\n",
+        "\n",
+        "plt.figure(figsize=(8,6))\n",
+        "sns.histplot(df['gdp_per_capita'], bins=30, kde=True)\n",
+        "plt.xlabel(\"GDP per Capita (USD)\")\n",
+        "plt.ylabel(\"Frequency\")\n",
+        "plt.title(\"Distribution of GDP per Capita\")\n",
+        "plt.grid(True)\n",
+        "plt.show()\n"
+      ],
+      "id": "fig-plot-3",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| echo: true\n",
+        "#| label: fig-plot-4\n",
+        "#| fig-cap: Life Expectancy Plot\n",
+        "\n",
+        "plt.figure(figsize=(8,6))\n",
+        "sns.histplot(df['life_expectancy'], bins=20, kde=True, color='green')\n",
+        "plt.xlabel(\"Life Expectancy (Years)\")\n",
+        "plt.ylabel(\"Frequency\")\n",
+        "plt.title(\"Distribution of Life Expectancy\")\n",
+        "plt.grid(True)\n",
+        "plt.show()"
+      ],
+      "id": "fig-plot-4",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "##### Further Analysis \n",
+        "\n",
+        "###### Relationship Between GDP per Capita and Life Expectancy \n",
+        "\n",
+        "In @fig-plot-5, I applied scatter plot to visualize the relationship and calculated the pearson correlation between these two vairables.\n"
+      ],
+      "id": "2bdb8bf3"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| echo: true\n",
+        "#| fig-cap: GDP per Capita and Life Expectancy\n",
+        "#| label: fig-plot-5\n",
+        "#| code-overflow: wrap\n",
+        "\n",
+        "df1 = wdi[['gdp_per_capita', 'life_expectancy']].dropna()\n",
+        "\n",
+        "# Scatter plot\n",
+        "plt.figure(figsize=(8,6))\n",
+        "sns.scatterplot(x=df1['gdp_per_capita'], y=df1['life_expectancy'])\n",
+        "plt.xlabel(\"GDP per Capita (USD)\")\n",
+        "plt.ylabel(\"Life Expectancy (Years)\")\n",
+        "plt.title(\"Relationship Between GDP per Capita and Life Expectancy\")\n",
+        "plt.grid(True)\n",
+        "plt.show()\n",
+        "\n",
+        "# Pearson correlation\n",
+        "correlation = np.corrcoef(df1['gdp_per_capita'], df1['life_expectancy'])[0, 1]\n",
+        "print(f\"Pearson Correlation: {correlation:.4f}\")"
+      ],
+      "id": "fig-plot-5",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "**Key Findings:**\n",
+        "\n",
+        "* There's a non-linear relationship between GDP per capita and life expectancy. The scatter plot indicates diminishing returns:\n",
+        "    + At lower income levels, life expectancy increases sharply with GDP per capita.\n",
+        "    + At higher income levels, the relationship flattens, meaning additional GDP per capita has a smaller impact on life expectancy.\n",
+        "    + This suggests that basic economic growth significantly improves life expectancy in low-income countries, likely due to better healthcare, sanitation, and living standards. However, beyond a certain level, other factors like lifestyle, healthcare quality, and aging play a bigger role.\n",
+        "* The Pearson correlation coefficient of 0.6386 suggests a moderate to strong positive relationship between GDP per capita and life expectancy.\n",
+        "    + This implies that, in general, countries with higher GDP per capita tend to have longer life expectancies.\n",
+        "\n",
+        "###### Unemployment Rate vs. GDP Growth Rate"
+      ],
+      "id": "85621938"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| echo: true\n",
+        "#| fig-cap: Unemployment Rate vs. GDP Growth Rate\n",
+        "#| label: fig-plot-6\n",
+        "#| code-overflow: wrap\n",
+        "\n",
+        "df2 = wdi[['unemployment_rate', 'gdp_growth_rate']].dropna()\n",
+        "\n",
+        "plt.figure(figsize=(8,6))\n",
+        "sns.regplot(x=df2['gdp_growth_rate'], y=df2['unemployment_rate'])\n",
+        "plt.xlabel(\"GDP Growth Rate (%)\")\n",
+        "plt.ylabel(\"Unemployment Rate (%)\")\n",
+        "plt.title(\"Unemployment Rate vs. GDP Growth Rate\")\n",
+        "plt.grid(True)\n",
+        "plt.show()\n",
+        "\n",
+        "X = df2['gdp_growth_rate'].values.reshape(-1,1)\n",
+        "y = df2['unemployment_rate'].values.reshape(-1,1)\n",
+        "\n",
+        "# Perform linear regression\n",
+        "A = np.hstack([np.ones((X.shape[0], 1)), X])  # Add intercept term\n",
+        "coefficients = np.linalg.lstsq(A, y, rcond=None)[0]  # Solve least squares\n",
+        "intercept, slope = coefficients.flatten()\n",
+        "\n",
+        "print(f\"Linear Regression Equation: Unemployment Rate = {intercept:.4f} + {slope:.4f} * GDP Growth Rate\")"
+      ],
+      "id": "fig-plot-6",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "The data is obtained from the World Development Indicators by the World Bank [@wdi].\n",
+        "\n",
+        "\n",
+        "**Key Findings**\n",
+        "\n",
+        "* The regression equation is \n",
+        "    $$\\text{Unemployment Rate} = 6.8714 + 0.0653 \\times \\text{GDP Growth Rate}$$\n",
+        "\n",
+        "    + The intercept (6.8714) suggests that when GDP Growth Rate is 0%, the expected Unemployment Rate is around 6.87%.\n",
+        "    + The slope (0.0653) indicates that for each 1% increase in GDP Growth Rate, the Unemployment Rate increases by 0.0653%.\n",
+        "*  The regression line shows a slight upward trend, suggesting a very weak positive relationship between GDP Growth and Unemployment. Normally, Okun's Law states that GDP growth should reduce unemployment, but this plot does not show a strong negative correlation.\n",
+        "* Many countries with similar GDP Growth Rates have widely different Unemployment Rates. Some outliers suggest that other factors influence unemployment more than GDP growth alone. \n",
+        "* The weak relationship could be due to structural unemployment, where economic growth does not directly translate into job creation. [@imf_unemployment]\n",
+        "* Labor market policies, automation, and demographic trends might be stronger drivers of unemployment than short-term GDP fluctuations. [@investopedia]\n",
+        " \n",
+        "##### Table of Key Statistics\n",
+        "\n",
+        "See @tbl-1.\n",
+        "\n",
+        ": Summary {#tbl-1}\n",
+        "\n",
+        " | Indicators | Findings |\n",
+        "|------|-----|\n",
+        "|   GDP per Capita  |   A right-skewed distribution, meaning a few wealthy countries significantly raise the average. Extreme economic disparity between countries.|\n",
+        "| Life Expectancy  |  The distribution is bimodal, with peaks around 60-65 years and 75-80 years.| \n",
+        "|  Unemployment Rate |   Right-skewed distribution. The peak occurs around 4-6%, suggesting that many economies operate at these levels. Some countries struggle with much higher unemployment rates.|\n",
+        "| GDP Growth Rate | Approximately normal distribution, centered around 0-5% growth. Some extreme cases where GDP growth is highly negative (e.g., recessions) or very high (above 20%).|\n",
+        "|GDP per Capita vs. Life Expectancy | Economic development is strongly linked to life expectancy, but the effect is more pronounced at lower GDP levels.|\n",
+        "| Unemployment Rate vs. GDP Growth Rate | No strong evidence that higher GDP growth reduces unemployment significantly. Other economic and policy factors likely play a larger role. |\n"
+      ],
+      "id": "09766058"
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3 (ipykernel)",
+      "path": "/Users/apple/opt/anaconda3/share/jupyter/kernels/python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}

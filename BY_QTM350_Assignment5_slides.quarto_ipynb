@@ -1,0 +1,144 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: \"WDI Dataset Analysis\"\n",
+        "author: \"Bernice Yuan\"\n",
+        "date: \"2025-02-26\"\n",
+        "format:\n",
+        "  revealjs:\n",
+        "    self-contained: true\n",
+        "    code-overflow: wrap\n",
+        "    code-fold: true\n",
+        "    drop:\n",
+        "      button: true\n",
+        "      engine: pyodide\n",
+        "      pyodide:\n",
+        "        packages:\n",
+        "          - matplotlib\n",
+        "          - numpy\n",
+        "          - pandas\n",
+        "          - seaborn\n",
+        "bibliography: references.bib\n",
+        "transition: fade\n",
+        "theme: solarized\n",
+        "transition-speed: default\n",
+        "scrollable: true\n",
+        "engine: jupyter\n",
+        "revealjs-plugins:\n",
+        "  - drop\n",
+        "  - multimodal\n",
+        "editor:\n",
+        "  render-on-save: true\n",
+        "---\n",
+        "\n",
+        "\n",
+        "# **Economic Indicator Analysis**\n",
+        "\n",
+        "## **Overview**\n",
+        "- Relationship between GDP per Capita and Life Expectancy\n",
+        "- Unemployment Rate vs. GDP Growth Rate\n",
+        "- Key statistical insights\n",
+        "\n",
+        "---\n",
+        "\n",
+        "## **GDP per Capita and Life Expectancy**\n",
+        "\n",
+        "- Higher GDP per capita is associated with longer life expectancy\n",
+        "- Diminishing returns effect: Beyond a threshold, GDP has less impact\n"
+      ],
+      "id": "cb5d0231"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import pandas as pd\n",
+        "import matplotlib.pyplot as plt\n",
+        "import seaborn as sns\n",
+        "import numpy as np\n",
+        "from IPython.display import display\n",
+        "\n",
+        "wdi = pd.read_csv('/Users/apple/Documents/QTM 350/BY_QTM350_Assignment5_slides_files/wdi.csv')\n",
+        "df1 = wdi[['gdp_per_capita', 'life_expectancy']].dropna()\n",
+        "plt.figure(figsize=(8,6))\n",
+        "sns.scatterplot(x=df1['gdp_per_capita'], y=df1['life_expectancy'])\n",
+        "plt.xlabel(\"GDP per Capita (USD)\")\n",
+        "plt.ylabel(\"Life Expectancy (Years)\")\n",
+        "plt.title(\"Relationship Between GDP per Capita and Life Expectancy\")\n",
+        "plt.grid(True)\n",
+        "plt.show()"
+      ],
+      "id": "3b0cacac",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "\n",
+        "## **Unemployment Rate vs. GDP Growth Rate**\n",
+        "\n",
+        "- Weak positive correlation\n",
+        "- Economic growth alone does not guarantee lower unemployment\n"
+      ],
+      "id": "61b4a433"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "df2 = wdi[['unemployment_rate', 'gdp_growth_rate']].dropna()\n",
+        "plt.figure(figsize=(8,6))\n",
+        "sns.regplot(x=df2['gdp_growth_rate'], y=df2['unemployment_rate'])\n",
+        "plt.xlabel(\"GDP Growth Rate (%)\")\n",
+        "plt.ylabel(\"Unemployment Rate (%)\")\n",
+        "plt.title(\"Unemployment Rate vs. GDP Growth Rate\")\n",
+        "plt.grid(True)\n",
+        "plt.show()"
+      ],
+      "id": "09f3b54b",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "\n",
+        "## **Summary & Conclusion**\n",
+        "- **GDP per capita positively influences life expectancy**, but with diminishing returns\n",
+        "- **Unemployment rates do not significantly decrease** with higher GDP growth\n",
+        "- **Further research**: Consider additional economic factors such as inflation, labor policies, and industry growth\n",
+        "\n",
+        "---\n",
+        "\n",
+        "## **References**\n",
+        "- [World Development Indicators](https://databank.worldbank.org/source/world-development-indicators)\n",
+        "- [IMF: What is Unemployment?](https://www.imf.org/external/pubs/ft/fandd/basics/unemploy.htm)\n",
+        "\n",
+        "---\n",
+        "\n",
+        "## **Thank You!**\n",
+        "Questions? Discussion?"
+      ],
+      "id": "61bd0287"
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "quarto-env",
+      "language": "python",
+      "display_name": "Python (Quarto)",
+      "path": "/Users/apple/Library/Jupyter/kernels/quarto-env"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
